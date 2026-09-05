@@ -2,9 +2,9 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# from functions import (get_churn_distribution, return_results_as_lists,show_graph_and_table_churns, show_all_churn_piecharts)
+from functions import (get_churn_distribution, return_results_as_lists,show_graph_and_table_churns, show_all_churn_piecharts)
 
-df = pd.read_csv('../data/raw/internet_service_churn.csv')
+df = pd.read_csv('data/eda_data/df_eda.csv')
 
 churned_users = df['churn'].sum()
 active_users = df.shape[0] - churned_users
@@ -84,12 +84,29 @@ match(graph_uk):
                 fontsize=8
             )
 
-        fig.suptitle('Огляд відтоку клієнтів за типами підписки')
+        st.title('Огляд відтоку клієнтів за типами підписки')
         plt.tight_layout()
 
         st.pyplot(fig)
     case "3. Тривалість підписки та відтік":
-        ...
+        ### Українська версія: Кількість відтоку за інтервалом тривалості підписки
+        # English version: Churn volume by subscription age interval
+
+        min_subscription_age = df['subscription_age'].min()
+        max_subscription_age = df['subscription_age'].max()
+        column_comparison = 'subscription_age'
+        sub_age_interval = 0.5
+        sub_procedural_slip = 0.2
+        
+        necessary_dict = get_churn_distribution(df,min_subscription_age,      max_subscription_age,column_comparison,sub_age_interval,sub_procedural_slip)
+        list_subscription_ages,list_churn_quantity = return_results_as_lists(min_subscription_age, max_subscription_age,column_comparison, necessary_dict,sub_age_interval,sub_procedural_slip)
+
+        sub_age_title = 'Кількість відтоку за інтервалом тривалості підписки'
+        x_sub_age = 'Тривалість підписки'
+        
+        final_sub_age_graph = show_graph_and_table_churns(list_churn_quantity,  list_subscription_ages,sub_age_title,x_sub_age) 
+        st.pyplot(final_sub_age_graph)
+
     case "4. Середня сума рахунку та відтік":
         ...
     case "5. Тривалість підписки та сума рахунку":
