@@ -170,9 +170,27 @@ match(graph_uk):
 
         result_sv = show_all_churn_piecharts(df,feature_column_sv,feature_presence_labels_sv,customer_status_labels_sv,title_all_customers_sv,title_churned_customers_sv,title_churn_rate_with_feature_sv,title_churn_rate_without_feature_sv)
 
+        st.title('Графіки залежності відтоку клієнтів від кількості збоїв у наданні послуг')
         st.pyplot(result_sv)
         st.markdown('### Висновок:')
         st.write("Перші два графіки показують, що поширеність збоїв у наданні послуг є майже однаковою як серед усіх клієнтів, так і серед тих, хто відмовився від послуг: 16,42 % усіх клієнтів та 16,69 % клієнтів, які відмовилися від послуг, стикалися принаймні з одним збоєм у наданні послуг. Третій і четвертий графіки показують, що показники відтоку клієнтів також дуже схожі між цими двома групами: 56,34% серед клієнтів, які стикалися з перебоями в наданні послуг, проти 55,23% серед клієнтів, які цього не зазнали. Отже, виходячи з цих результатів, істотної різниці в рівні відтоку клієнтів між тими, хто стикався з перебоями в наданні послуг, та тими, хто не стикався, немає. Хоча більше половини клієнтів, які стикалися з перебоями в наданні послуг, зрештою відтоку (56,34 %), дуже схожа частка клієнтів, які не стикалися з такими перебоями, також відтоку (55,23 %). Отже, самі по собі ці результати не дають переконливих доказів того, що перебої в наданні послуг пов’язані з вищим ризиком відтоку клієнтів.")
+
+        min_service_failure = float(df['service_failure_count'].min())
+        max_service_failure = float(df['service_failure_count'].max())
+        column_service_failure = 'service_failure_count'
+        service_failure_interval = 1
+        service_failure_procedural_slip = 1
+
+        necessary_service_dict = get_churn_distribution(df, min_service_failure, max_service_failure,column_service_failure,service_failure_interval,service_failure_procedural_slip)
+        service_failure_list,churn_quantity_list_f = return_results_as_lists(min_service_failure, max_service_failure,column_service_failure, necessary_service_dict,service_failure_interval,service_failure_procedural_slip)
+
+        service_failure_title = 'Кількість відтоку від кількості збоїв'
+        x_service_failure = 'Кількість збоїв'
+        
+        table_height_service_failure = 1
+        final_service_failure_graph = show_graph_and_table_churns(churn_quantity_list_f, service_failure_list,service_failure_title,x_service_failure, table_height_service_failure) 
+        final_service_failure_graph
+        st.pyplot(final_service_failure_graph)
 
     case "7. Відтік клієнтів із чинними контрактами":
         ...
