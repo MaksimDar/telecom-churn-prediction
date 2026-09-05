@@ -255,21 +255,75 @@ if language == 'Українська':
 
             result_ua = show_all_churn_piecharts(df,feature_column_ua,feature_presence_labels_da,customer_status_ua,title_all_customers_ua,title_churned_customers_ua,title_churn_rate_with_feature_ua,title_churn_rate_with_feature_ua)
 
-            result_ua
+            st.markdown('##### 3. Графік співвідношення між відтоком клієнтів та впливом середніх показників швидкості вивантаження (upload)')
+            st.pyplot(result_ua)
 
+            st.markdown('### Висновок:')
+            st.write("Оскільки показник upload_avg демонструє майже ідентичні характеристики розподілу та тенденції відтоку порівняно з download_avg (із відхиленнями менш ніж 1,6%), отримані результати збігаються з даними щодо завантаження: низький рівень використання функцій передачі даних (upload) так само пов’язаний із вищою ймовірністю відмови від послуги, що підтверджує статус загального низького обсягу передачі даних як ключового індикатора відтоку.")
 
+            ### 4. Графік кількості відтоку у порівнянні із середнім показником вивантаженнь
+            min_upload_avg = df['upload_avg'].min()
+
+            max_upload_avg = 165.0
+            column_upload_avg = 'upload_avg'
+            upload_avg_interval = 5
+            upload_avg_procedural_slip = 1
+            
+            necessary_upload_avg_dict = get_churn_distribution(df, min_upload_avg, max_upload_avg,column_upload_avg,upload_avg_interval,upload_avg_procedural_slip)
+            upload_avg_list,churn_quantity_list_upload = return_results_as_lists(min_upload_avg, max_upload_avg,column_upload_avg, necessary_upload_avg_dict,upload_avg_interval,upload_avg_procedural_slip)
+
+            upload_avg_title = 'Кількість відтоку у порівнянні із середнім показником вивантажень'
+            x_upload_avg = 'Кількість вивантажень'
+
+            final_upload_avg_graph = show_graph_and_table_churns(churn_quantity_list_upload,upload_avg_list,upload_avg_title,x_upload_avg) 
+            st.markdown('##### 4. Графік кількості відтоку у порівнянні із середнім показником вивантаженнь')
+            st.pyplot(final_upload_avg_graph)
+            st.markdown('### Висновок:')
+            st.write("Як таблиця, так і графік демонструють схожу загальну тенденцію до зниження показника download_avg, але з однією ключовою відмінністю: пік відтоку користувачів припадає на момент, коли середня кількість завантажень становить 5,0 (досягаючи 57,34 %), а не на нульовому рівні. Крім того, на графіку спостерігається набагато більш різке падіння: щойно показник активності завантаження досягає 20,0, рівень відтоку користувачів опускається нижче 1% (0,96%) і продовжує стабільно та поступово знижуватися.")
 
         case "9. Перевищення ліміту Download та відтік":
-            ...
+            st.markdown('### 9. Графіки відтоку клієнтів на основі перевищення ліміту завантажень')
+            #### 1. Графік співвідношення між характеристикою download_over_limit та між потенційним середнім показником відтоку
+            fig_ol,axs_ol = plt.subplots()
+
+            axs_ol = sns.lineplot(x='download_over_limit',y='churn',data=df)
+            axs_ol.set_title('Співвідношення між характеристикою download_over_limit та між потенційним середнім показником відтоку')
+            plt.tight_layout()
+            plt.show()
+
+            st.markdown('##### 1. Графік співвідношення між характеристикою download_over_limit та між потенційним середнім показником відтоку')
+            st.pyplot(fig_ol)
+            st.markdown('### Висновок:')
+            st.write("Лінійний графік демонструє сильний позитивний кореляційний зв’язок: зі збільшенням показника `download_over_limit` середній рівень відтоку клієнтів різко зростає — приблизно з 0,53 (при значенні 0) — і стабільно підвищується на проміжних етапах, сягаючи 1.0, коли значення показника досягає 7.")
+
+            #### 2. Графік співвідношення між відтоком клієнтів та впливом  опції перевищення ліміту завантаження (download_over_limit)
+            feature_column_dol = 'download_over_limit'
+
+            feature_presence_labels_dol = ['Перевищели ліміт завантаження', 'Не перевищели ліміт завантаження']
+            customer_status_dol = ['Пішли','Залишилися активними']
+
+            title_dol = 'Усі клієнти: перевищили ліміт завантаження'
+            title_dol_churns = 'Клієнти, що пішли: перевищили ліміт завантаження'
+
+            title_churn_rate_with_feature_dol = 'Пішли чи залишилися: перевищели ліміт завантаження'
+            title_churn_rate_without_feature_dol = 'Пішли чи залишилися: НЕ перевищели ліміт завантаження'
+
+            result_dol = show_all_churn_piecharts(df,feature_column_dol,feature_presence_labels_dol,customer_status_dol,title_dol,title_dol_churns,title_churn_rate_with_feature_dol,title_churn_rate_without_feature_dol)
+            st.markdown('##### 2. Графік співвідношення між відтоком клієнтів та впливом  опції перевищення ліміту завантаження (download_over_limit)')
+            st.pyplot(result_dol)
+            st.markdown('### Висновок:')
+            st.write("Чотирипанельний датшборд показує, що лише 5.40% усіх клієнтів перевищили ліміт завантажень, і вони становлять таку ж малу частку (8.62%) серед загальної кількості клієнтів, що пішли. Проте аналіз рівня відтоку всередині кожного сегмента розкриває важливу інсайдерську інформацію: серед клієнтів, які перевищили ліміт, аж 88.46% пішли (третій графік). Натомість серед тих, хто не перевищував ліміти, 53.53% також залишили сервіс (четвертий графік). Крім того, лінійний графік демонструє сильну позитивну кореляцію: зі збільшенням показника download_over_limit від 0 до 7 середній рівень відтоку стрімко зростає приблизно з 0.53 до 1.0. Це вказує на те, що досягнення або перевищення лімітів завантаження є серйозним джерелом невдоволення та потужним прямим індикатором відтоку клієнтів.")
+
 
         case "10. Кореляція між ознаками":
-            ...
+            st.markdown('### 10. Графік кореляції між ознаками')
+            corr_matrix = df.corr()
+
+            fig_cr, axs_cr = plt.subplots()
+            axs_cr = sns.heatmap(corr_matrix, cmap='coolwarm', annot=False, fmt=".2f")
+            axs_cr.set_title('Кореляція між ознаками')
+            st.pyplot(fig_cr)
     
-
-
-
-
-
 
 else:
     st.title('Exploratory Data Analysis (EDA)')
