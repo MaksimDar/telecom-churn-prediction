@@ -255,7 +255,7 @@ if language == 'Українська':
 
             result_ua = show_all_churn_piecharts(df,feature_column_ua,feature_presence_labels_da,customer_status_ua,title_all_customers_ua,title_churned_customers_ua,title_churn_rate_with_feature_ua,title_churn_rate_with_feature_ua)
 
-result_ua
+            result_ua
 
 
 
