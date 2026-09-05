@@ -183,9 +183,81 @@ if language == 'Українська':
             st.write("Графік демонструє, що, хоча 83,31% користувачів, які відмовилися від послуг, не стикалися з жодними збоями в їх наданні, 10,39% випадків відтоку клієнтів могли бути спричинені першим збоєм, а другий збій міг призвести до втрати 3,63% клієнтів; водночас подальші збої не мають суттєвого впливу на цей показник. Отже, це свідчить про те, що кількість збоїв у наданні послуг не є вагомою причиною для припинення користування телекомунікаційними послугами.")
 
         case "7. Відтік клієнтів із чинними контрактами":
-            ...
+            feature_column_ac = 'has_active_contract'
+            feature_presence_labels_ac = ['Мають чинний контракт','Не мають чинний контракт']
+            customer_status_ac = ['Пішли','Залишилися активними']
+            title_all_customers_ac = 'Чинні контракти серед усіх клієнтів'
+            title_churned_customers_ac = 'Чинні контракти серед клієнтів, які пішли'
+            title_churn_rate_with_feature_ac = 'Пішли чи залишилися: клієнти із чинними контрактами'
+            title_churn_rate_without_feature_ac = 'Пішли чи залишилися: клієнти без чинних контрактів'
+            result_ac = show_all_churn_piecharts(df, feature_column_ac,feature_presence_labels_ac,customer_status_ac,title_all_customers_ac,title_churned_customers_ac,title_churn_rate_with_feature_ac,title_churn_rate_without_feature_ac)
+            st.markdown('#### Графік відтоку клієнтів, які мають чинні контракти')
+            st.pyplot(result_ac)
+            st.markdown('### Висновок:')
+            st.write("Перша кругова діаграма показує, що 52,49 % усіх клієнтів не мають чинного договору. Друга діаграма показує, що лише 10,09 % клієнтів, які відмовилися від послуг, мали чинний договір на момент відходу, що означає: 89,91 % усіх випадків відмови припадає на клієнтів без чинних договірних зобов’язань. Крім того, третій графік ілюструє, що понад 88 % (88,23 %) клієнтів з діючими договорами не відмовилися від телекомунікаційних послуг, тоді як, навпаки, четвертий графік демонструє, що 94,93 % тих, хто не мав діючого договору, відмовилися від послуг. Це вказує на те, що відсутність діючого договору тісно пов’язана з вищою ймовірністю відтоку клієнтів. Практичний висновок полягає в тому, що найвищий ризик відтоку клієнтів у компанії зосереджений у її клієнтській базі без контрактів, і заходи з утримання клієнтів — такі як стимулювання поновлення контрактів або пропозиція строкових акцій — повинні бути спрямовані насамперед на цей сегмент.")
         case "8. Download/Upload та відтік":
-            ...
+            st.markdown('### Графіки порівняння та впливу середніх показників швидкості завантаження (download) і вивантаження (upload) на кількість відтоку клієнтів.')
+
+            ### 1. Графік співвідношення між відтоком клієнтів та впливом середніх показників швидкості завантаження (download)
+            feature_column_da = 'download_avg'
+
+            feature_presence_labels_da = ['Скористалися опцією завантаження', 'Не скористалися опцією завантаження']
+            customer_status_da = ['Пішли','Залишилися активними']
+            
+            title_all_customers_da = 'Усі клієнти: використання опції завантажень'
+            title_churned_customers_da = 'Клієнти, що пішли: використання опції завантажень'
+            title_churn_rate_with_feature_da = 'Пішли чи залишилися: використали опцію завантаження'
+            title_churn_rate_without_feature_da = 'Пішли чи залишилися: НЕ використали опцію завантаження'
+            
+            result_da = show_all_churn_piecharts(df, feature_column_da,        feature_presence_labels_da,customer_status_da,title_all_customers_da, title_churned_customers_da,            title_churn_rate_with_feature_da,            title_churn_rate_without_feature_da)
+            
+            st.markdown('##### 1. Графік співвідношення між відтоком клієнтів та впливом середніх показників швидкості завантаження (download)')
+            st.pyplot(result_da)
+            st.markdown('### Висновок:')
+            st.write("Як видно з чотирипанельної інформаційної панелі, перший графік показує, що понад 84% (84,33%) усіх користувачів скористалися опцією завантаження (`download_avg`), тоді як цей показник для клієнтів, які відмовилися від послуги, становить 72,74% — приблизно на 11,6% менше. Крім того, третій графік ілюструє, що серед користувачів, які скористалися опцією завантаження, розподіл є майже рівним: 47,79% відписалися, а 52,21% залишаються активними. З іншого боку, четвертий графік демонструє, що переважна більшість (96,43%) клієнтів, які не скористалися опцією завантаження, зрештою відписалися. Це вказує на те, що відсутність активності щодо завантажень тісно пов’язана з відмовою від послуги.")
+
+            ### 2. Графік кількості відтоку у порівнянні із середнім показником завантажень
+
+            min_download_avg = df['download_avg'].min()
+
+
+            max_download_avg = 210
+            column_download_avg = 'download_avg'
+            download_avg_interval = 5
+            download_avg_procedural_slip = 1
+
+            necessary_download_avg_dict = get_churn_distribution(df, min_download_avg, max_download_avg,column_download_avg,download_avg_interval,download_avg_procedural_slip)
+            download_avg_list,churn_quantity_list_avg = return_results_as_lists(min_download_avg, max_download_avg,column_download_avg, necessary_download_avg_dict,download_avg_interval,download_avg_procedural_slip)
+
+            download_avg_title = 'Кількість відтоку у порівнянні із середнім показником завантажень'
+            x_download_avg = 'Кількість завантажень'
+            table_height_download_avg = 1.5
+            
+            final_download_avg_graph = show_graph_and_table_churns(churn_quantity_list_avg,download_avg_list,download_avg_title,x_download_avg,table_height_download_avg) 
+
+            st.markdown('##### 2. Графік кількості відтоку у порівнянні із середнім показником завантажень')
+            st.pyplot(final_download_avg_graph)
+            st.markdown('### Висновок:')
+            st.write("Як таблиця, так і графік демонструють, що зі збільшенням кількості завантажень частка відтоку стабільно знижується")
+
+            ### 3. Графік співвідношення між відтоком клієнтів та впливом середніх показників швидкості вивантаження (upload)
+            ## upload_avg = ua
+
+            feature_column_ua = 'upload_avg'
+
+            feature_presence_labels_ua = ['Скористалися опцією вивантаженя', 'Не скористалися опцією вивантаженя']
+            customer_status_ua = ['Пішли','Залишилися активними']
+            title_all_customers_ua = 'Усі клієнти: використання опції вивантажень'
+            title_churned_customers_ua = 'Клієнти, що пішли: використання опції вивантажень'
+
+            title_churn_rate_with_feature_ua = 'Пішли чи залишилися: використали опцію вивантаженя'
+            title_churn_rate_with_feature_ua = 'Пішли чи залишилися: НЕ використали опцію вивантаженя'
+
+            result_ua = show_all_churn_piecharts(df,feature_column_ua,feature_presence_labels_da,customer_status_ua,title_all_customers_ua,title_churned_customers_ua,title_churn_rate_with_feature_ua,title_churn_rate_with_feature_ua)
+
+result_ua
+
+
 
         case "9. Перевищення ліміту Download та відтік":
             ...
