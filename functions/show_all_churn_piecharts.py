@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import streamlit as st
 
 def show_all_churn_piecharts(data_structure, request_column: str, usage_labels: list, churn_labels:list, all_title: str, churns_title: str, with_churns_title: str,without_churns_title: str) -> None:
     """
@@ -63,5 +64,4 @@ def show_all_churn_piecharts(data_structure, request_column: str, usage_labels: 
     axs[3].set_title(without_churns_title)
     axs[3].pie(customers_without_the_feature,labels=churn_labels,autopct="%.2f%%",colors=['Teal','Salmon'],shadow=False, labeldistance=1.1, startangle=0, radius=1)
     plt.subplots_adjust(hspace=0.4, wspace=0.3)
-    # plt.tight_layout()
-    plt.show()
+    return fig

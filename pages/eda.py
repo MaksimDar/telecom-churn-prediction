@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 from functions import (get_churn_distribution, return_results_as_lists,show_graph_and_table_churns, show_all_churn_piecharts)
 
@@ -47,12 +48,15 @@ match(graph_uk):
         labels_users = ['Відтік користувачів','Активні користувачі']
         explode = (0, 0.1, 0, 0)
 
-        st.title('Частка активних користувачів та користувачів, які відмовилися від послуги компанії')
+        st.markdown('### Частка активних користувачів та користувачів, які відмовилися від послуги компанії')
         
         fig1, ax1 = plt.subplots()
         ax1.pie(data_users, labels=labels_users, autopct='%.2f%%',colors=['Teal','Salmon'], shadow=False, labeldistance=1.1, startangle=0)
         ax1.axis('equal')  
         st.pyplot(fig1)
+        st.markdown('### Висновок:')
+        st.write('Кругова діаграма демонструє, що набір даних містить більше користувачів, які припинили користуватися послугами, і їхня частка становить 55,41%.')
+
     case "2. Відтік за типом підписки":
         rows = ['is_tv_subscriber', 'is_movie_package_subscriber', 'dual_subscriber']
 
@@ -84,13 +88,13 @@ match(graph_uk):
                 fontsize=8
             )
 
-        st.title('Огляд відтоку клієнтів за типами підписки')
+        st.markdown('### Огляд відтоку клієнтів за типами підписки')
         plt.tight_layout()
 
         st.pyplot(fig)
+        st.markdown('### Висновок:')
+        st.write('На основі отриманих графіків можна чітко помітити, що понад 70 % користувачів із підпискою на телебачення відмовилися від телекомунікаційних послуг, тоді як 79,5 % користувачів, які мають підписку на фільми, не відмовилися від послуг, що доводить: підписка на пакет фільмів є важливою причиною збереження телекомунікаційних послуг. Крім того, абоненти, які мають підписку як на кінопакет, так і на подвійний пакет, демонструють однакові результати за відсотковою різницею, і лише 2 користувачі мають підписку на кінопакет, але не мають підписки на телебачення.')
     case "3. Тривалість підписки та відтік":
-        ### Українська версія: Кількість відтоку за інтервалом тривалості підписки
-        # English version: Churn volume by subscription age interval
 
         min_subscription_age = df['subscription_age'].min()
         max_subscription_age = df['subscription_age'].max()
@@ -104,15 +108,72 @@ match(graph_uk):
         sub_age_title = 'Кількість відтоку за інтервалом тривалості підписки'
         x_sub_age = 'Тривалість підписки'
         
-        final_sub_age_graph = show_graph_and_table_churns(list_churn_quantity,  list_subscription_ages,sub_age_title,x_sub_age) 
+        final_sub_age_graph = show_graph_and_table_churns(list_churn_quantity,  list_subscription_ages,sub_age_title,x_sub_age)
+
+        st.markdown('### Кількість відтоку за інтервалом тривалості підписки')
         st.pyplot(final_sub_age_graph)
+        st.markdown('### Висновок:')
+        st.write('На основі графіка видно, що найбільший рівень відтоку спостерігається в період від 0,5 до 2,5 років, після чого, починаючи з 3,0 років, відбувається його значне зниження. Отже, це свідчить про те, що позначка 3,0 роки є межею, після якої показники відтоку суттєво зменшуються.')
 
     case "4. Середня сума рахунку та відтік":
-        ...
+        min_bill_avg = df['bill_avg'].min()
+        max_bill_avg = 220.0
+        column_bill_avg = 'bill_avg'
+        bill_avg_interval = 10
+        bill_procedural_slip = 1
+        necessary_bill_dict = get_churn_distribution(df, min_bill_avg, max_bill_avg,column_bill_avg,bill_avg_interval,bill_procedural_slip)
+        bill_avg_list,churn_quantity_list = return_results_as_lists(min_bill_avg, max_bill_avg,column_bill_avg, necessary_bill_dict,bill_avg_interval,bill_procedural_slip)
+        bill_avg_title = 'Кількість відтоку за інтервалом середньої суми'
+        x_bill_avg = 'Середній чек'
+
+        final_bill_avg_graph = show_graph_and_table_churns(churn_quantity_list,bill_avg_list,bill_avg_title,x_bill_avg)
+
+        st.markdown('### Графік взаємозв’язку між середнью сумою та відтоком клієнтів')
+        st.pyplot(final_bill_avg_graph)
+        st.markdown('### Висновок:')
+        st.write('Наведений нижче графік демонструє, що найбільший відсоток відтоку клієнтів (понад 91%) спостерігається серед облікових записів середнього розміру із залишком на рахунку 30 або менше, причому пік відтоку припадає на діапазон середнього розміру рахунку від 10 до 30. Отже, варто зазначити: що вищою є сума рахунку (починаючи з 30), то менша ймовірність того, що користувач скасує підписку. Крім того, середнє значення показника `bill_avg` становить 18,9 — це величина в межах діапазону від 10 до 20, на який припадає 35,58% випадків відтоку.')
     case "5. Тривалість підписки та сума рахунку":
-        ...
+        graph = sns.relplot(x='subscription_age',y='bill_avg', hue='churn', col='churn',data=df)
+    
+        st.markdown('### Графік взаємозв’язку між середнью сумою та відтоком клієнтів')
+        st.pyplot(graph)
+        st.markdown('### Висновок:')
+        st.write('На даному графіку не спостерігається суттєвих відмінностей (через надмірне накладання графіків) у взаємодії змінних bill_avg та subscription_age: показники відтоку клієнтів майже однакові, за винятком того, що користувачі з найдорожчими рахунками не відмовляються від послуг і продовжують користуватися телекомунікаційними послугами.')
+
+        df_filtered = df[df['bill_avg'] <= 150]
+
+        fig1, ax1 = plt.subplots()
+        ax1 = sns.lineplot(x='bill_avg',y='subscription_age',data=df_filtered)
+        ax1.set_xlabel('Середня сума рахунку (bill_avg)')
+        ax1.set_ylabel('Середній термін підписки (subscription_age)')
+        plt.tight_layout()
+
+        st.markdown('### Співвідношення між терміном підписки та середньою сумою рахунку')
+        st.pyplot(fig1)
+        st.markdown('### Висновок:')
+        st.write("Графік показує середнє значення subscription_age для кожного значення bill_avg (обмежено діапазоном 0–150). Затінена область навколо лінії — це 95% довірчий інтервал, обчислений методом бутстрепінгу. У діапазоні bill_avg від 0 до ~150, де зосереджена переважна більшість клієнтів, середня тривалість підписки коливається приблизно між 1.5 та 5.5 роками, без чіткого монотонного зв'язку між сумою рахунку та тривалістю підписки — тобто клієнти з різними тарифами затримуються в компанії приблизно однаково довго. Після позначки bill_avg ≈ 150 лінія стає різкою та нестабільною, а довірчий інтервал — значно ширшим. Це не відображає реальну закономірність, а є артефактом малої вибірки: лише 93 з 72,274 клієнтів (0.13%) мають bill_avg вище 150, тому середнє значення стає надзвичайно чутливим до окремих викидів.")
+
+
     case "6. Відтік та збої послуг":
-        ...
+        feature_column_sv = 'service_failure_count'
+
+        feature_presence_labels_sv = ['Мали сервісні збої','Не мали сервісних збоїв']
+
+        customer_status_labels_sv = ['Пішли','Залишилися активними']
+        
+        title_all_customers_sv = 'Сервісні збої серед усіх клієнтів'
+        title_churned_customers_sv = 'Сервісні збої серед клієнтів, які пішли'
+        
+        title_churn_rate_with_feature_sv = 'Пішли чи залишилися: клієнти із сервісними збоями'
+        title_churn_rate_without_feature_sv = 'Пішли чи залишилися: клієнти без сервісних збоїв'
+
+
+        result_sv = show_all_churn_piecharts(df,feature_column_sv,feature_presence_labels_sv,customer_status_labels_sv,title_all_customers_sv,title_churned_customers_sv,title_churn_rate_with_feature_sv,title_churn_rate_without_feature_sv)
+
+        st.pyplot(result_sv)
+        st.markdown('### Висновок:')
+        st.write("Перші два графіки показують, що поширеність збоїв у наданні послуг є майже однаковою як серед усіх клієнтів, так і серед тих, хто відмовився від послуг: 16,42 % усіх клієнтів та 16,69 % клієнтів, які відмовилися від послуг, стикалися принаймні з одним збоєм у наданні послуг. Третій і четвертий графіки показують, що показники відтоку клієнтів також дуже схожі між цими двома групами: 56,34% серед клієнтів, які стикалися з перебоями в наданні послуг, проти 55,23% серед клієнтів, які цього не зазнали. Отже, виходячи з цих результатів, істотної різниці в рівні відтоку клієнтів між тими, хто стикався з перебоями в наданні послуг, та тими, хто не стикався, немає. Хоча більше половини клієнтів, які стикалися з перебоями в наданні послуг, зрештою відтоку (56,34 %), дуже схожа частка клієнтів, які не стикалися з такими перебоями, також відтоку (55,23 %). Отже, самі по собі ці результати не дають переконливих доказів того, що перебої в наданні послуг пов’язані з вищим ризиком відтоку клієнтів.")
+
     case "7. Відтік клієнтів із чинними контрактами":
         ...
     case "8. Download/Upload та відтік":
