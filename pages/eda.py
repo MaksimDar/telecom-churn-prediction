@@ -121,7 +121,7 @@ if language == 'Українська':
         case "5. Тривалість підписки та сума рахунку":
             graph = sns.relplot(x='subscription_age',y='bill_avg', hue='churn', col='churn',data=df)
             
-            st.markdown('### Графік взаємозв’язку між середнью сумою та відтоком клієнтів')
+            st.markdown('##### 1. Графік взаємозв’язку між тривалістю підписки та середньою сумою рахунку, з розбивкою за рівнем відтоку клієнтів')
             st.pyplot(graph)
             st.markdown('### Висновок:')
             st.write('На даному графіку не спостерігається суттєвих відмінностей (через надмірне накладання графіків) у взаємодії змінних bill_avg та subscription_age: показники відтоку клієнтів майже однакові, за винятком того, що користувачі з найдорожчими рахунками не відмовляються від послуг і продовжують користуватися телекомунікаційними послугами.')
@@ -134,7 +134,7 @@ if language == 'Українська':
             ax1.set_ylabel('Середній термін підписки (subscription_age)')
             plt.tight_layout()
 
-            st.markdown('### Співвідношення між терміном підписки та середньою  сумою рахунку')
+            st.markdown('##### 2. Співвідношення між терміном підписки та середньою  сумою рахунку')
             st.pyplot(fig1)
             st.markdown('### Висновок:')
             st.write("Графік показує середнє значення subscription_age для кожного значення bill_avg (обмежено діапазоном 0–150). Затінена область навколо лінії — це 95% довірчий інтервал, обчислений методом бутстрепінгу. У діапазоні bill_avg від 0 до ~150, де зосереджена переважна більшість клієнтів, середня тривалість підписки коливається приблизно між 1.5 та 5.5 роками, без чіткого монотонного зв'язку між сумою рахунку та тривалістю підписки — тобто клієнти з різними тарифами затримуються в компанії приблизно однаково довго. Після позначки bill_avg ≈ 150 лінія стає різкою та нестабільною, а довірчий інтервал — значно ширшим. Це не   відображає реальну закономірність, а є артефактом малої вибірки: лише 93 з 72,274 клієнтів (0.13%) мають bill_avg вище 150, тому середнє значення стає надзвичайно чутливим до окремих викидів.")
@@ -340,31 +340,31 @@ else:
     match(graph_en):
             case '1. Active and Churned Customers':
                 data_users = [churned_users,active_users]
-                labels_users = ['Відтік користувачів','Активні користувачі']
+                labels_users = ['User Churn','Active users']
                 explode = (0, 0.1, 0, 0)
         
-                st.markdown('### Частка активних користувачів та користувачів, які відмовилися від послуги компанії')
+                st.markdown("### Percentage of active users and users who have canceled the company's service")
                 
                 fig1, ax1 = plt.subplots()
                 ax1.pie(data_users, labels=labels_users, autopct='%.2f%%',colors=['Teal','Salmon'], shadow=False, labeldistance=1.1, startangle=0)
                 ax1.axis('equal')  
                 st.pyplot(fig1)
-                st.markdown('### Висновок:')
-                st.write('Кругова діаграма демонструє, що набір даних містить більше користувачів, які припинили користуватися послугами, і їхня частка становить 55,41%.')
+                st.markdown('### Conclusion:')
+                st.write("The pie chart shows that the dataset contains more users who have stopped using the services, and they account for 55.41% of the total.")
         
             case "2. Churn by Subscription Type":
-                rows = ['is_tv_subscriber', 'is_movie_package_subscriber',         'dual_subscriber']
+                rows = ['is_tv_subscriber', 'is_movie_package_subscriber',     'dual_subscriber']
     
-                x = ['Без підписки', 'З підпискою']
-                churn_status = ['Відсутність відтоку клієнтів', 'Відтік клієнтів']
+                x = ['Without subscription', 'With subscription']
+                churn_status = ['No customer churn', 'Customer churn']
                 graphichs_amount = 6
                 fig, axs = plt.subplots(len(rows), 2, figsize=(12,12))
                 for i, col in enumerate(rows):
                     churn_count = df.groupby(rows[i])['churn'].sum().sort_index    (ascending=True)
                     axs[i,0].bar(x,churn_count,label=rows[i])
-                    axs[i,0].set_title(f'Підписка {rows[i]}',fontsize=10)
-                    axs[i,0].set_xlabel(f'Кількість користувачів з {rows[i]} підпискою') 
-                    axs[i,0].set_ylabel('Кількість відтоку')
+                    axs[i,0].set_title(f'Subscription {rows[i]}',fontsize=10)
+                    axs[i,0].set_xlabel(f'Quantity of users with {rows[i]} the subscription') 
+                    axs[i,0].set_ylabel('Churn quantity')
                     
                     axs[i,1].pie(churn_count)
                     axs[i,1].set_title(rows[i],fontsize=10)
@@ -382,12 +382,12 @@ else:
                         fontsize=8
                     )
     
-                st.markdown('### Огляд відтоку клієнтів за типами підписки')
+                st.markdown('### Overview of customer churn by subscription type')
                 plt.tight_layout()
     
                 st.pyplot(fig)
-                st.markdown('### Висновок:')
-                st.write('На основі отриманих графіків можна чітко помітити, що понад 70 % користувачів із підпискою на телебачення відмовилися від телекомунікаційних послуг, тоді як 79,5 % користувачів, які мають підписку на фільми, не відмовилися від послуг, що доводить: підписка на пакет фільмів є важливою причиною збереження телекомунікаційних послуг. Крім того, абоненти, які мають підписку як на кінопакет, так і на подвійний пакет, демонструють однакові результати за відсотковою різницею, і лише 2 користувачі мають підписку на кінопакет, але не мають підписки на телебачення.')
+                st.markdown('### Conclusion:')
+                st.write("Based on the graphs, it is clear that more than 70% of users with a TV subscription canceled their telecommunications services, while 79.5% of users with a movie subscription did not cancel their services, which proves that a movie package subscription is a key factor in retaining telecommunications services. In addition, subscribers who have subscriptions to both the movie package and the dual package show identical results in terms of percentage difference, and only 2 users have a subscription to the movie package but do not have a TV subscription.")
             case "3. Subscription Duration and Churn":
     
                 min_subscription_age = df['subscription_age'].min()
@@ -396,18 +396,18 @@ else:
                 sub_age_interval = 0.5
                 sub_procedural_slip = 0.2
                 
-                necessary_dict = get_churn_distribution(df,min_subscription_age,   max_subscription_age,column_comparison,sub_age_interval,        sub_procedural_slip)
-                list_subscription_ages,list_churn_quantity = return_results_as_lists(min_subscription_age, max_subscription_age,column_comparison,     necessary_dict,sub_age_interval,sub_procedural_slip)
+                necessary_dict = get_churn_distribution(df,min_subscription_age,max_subscription_age,column_comparison,sub_age_interval, sub_procedural_slip)
+                list_subscription_ages,list_churn_quantity = return_results_as_lists(min_subscription_age, max_subscription_age,column_comparison,necessary_dict,sub_age_interval,sub_procedural_slip)
     
-                sub_age_title = 'Кількість відтоку за інтервалом тривалості підписки'
-                x_sub_age = 'Тривалість підписки'
+                sub_age_title = 'Number of churns by subscription duration interval'
+                x_sub_age = 'Subscription Duration'
                 
                 final_sub_age_graph = show_graph_and_table_churns(list_churn_quantity,list_subscription_ages,sub_age_title,x_sub_age)
     
-                st.markdown('### Кількість відтоку за інтервалом тривалості підписки')
+                st.markdown('### Number of churns by subscription duration interval')
                 st.pyplot(final_sub_age_graph)
-                st.markdown('### Висновок:')
-                st.write('На основі графіка видно, що найбільший рівень відтоку   спостерігається в період від 0,5 до 2,5 років, після чого, починаючи з 3,0 років, відбувається його значне зниження. Отже, це свідчить про те, що позначка 3,0 роки є межею, після якої показники відтоку суттєво зменшуються.')
+                st.markdown('### Conclusion:')
+                st.write('The graph shows that the highest outflow rate is observed between 0.5 and 2.5 years, after which, starting at 3.0 years, there is a significant decline. This indicates that the 3.0-year mark is the threshold beyond which outflow rates decrease substantially.')
     
             case "4. Average Bill Amount and Churn":
                 min_bill_avg = df['bill_avg'].min()
@@ -415,53 +415,53 @@ else:
                 column_bill_avg = 'bill_avg'
                 bill_avg_interval = 10
                 bill_procedural_slip = 1
-                necessary_bill_dict = get_churn_distribution(df, min_bill_avg,     max_bill_avg,column_bill_avg,bill_avg_interval,bill_procedural_slip)
-                bill_avg_list,churn_quantity_list = return_results_as_lists        (min_bill_avg, max_bill_avg,column_bill_avg, necessary_bill_dict,   bill_avg_interval,bill_procedural_slip)
-                bill_avg_title = 'Кількість відтоку за інтервалом середньої суми'
-                x_bill_avg = 'Середній чек'
+                necessary_bill_dict = get_churn_distribution(df, min_bill_avg,  max_bill_avg,column_bill_avg,bill_avg_interval,bill_procedural_slip)
+                bill_avg_list,churn_quantity_list = return_results_as_lists    (min_bill_avg, max_bill_avg,column_bill_avg, necessary_bill_dict,bill_avg_interval,bill_procedural_slip)
+                bill_avg_title = 'Numbers of churn by average amount interval'
+                x_bill_avg = 'Average bill'
     
                 final_bill_avg_graph = show_graph_and_table_churns(churn_quantity_list, bill_avg_list,bill_avg_title,x_bill_avg)
     
-                st.markdown('### Графік взаємозв’язку між середнью сумою та відтоком клієнтів')
+                st.markdown('### Chart showing the relationship between average bill and customer churn')
                 st.pyplot(final_bill_avg_graph)
-                st.markdown('### Висновок:')
-                st.write('Наведений нижче графік демонструє, що найбільший відсоток відтоку клієнтів (понад 91%) спостерігається серед облікових записів середнього розміру із залишком на рахунку 30 або менше, причому пік відтоку припадає на діапазон середнього розміру рахунку від 10 до 30. Отже, варто зазначити: що вищою є сума рахунку (починаючи з 30), то менша ймовірність того, що користувач скасує підписку. Крім того, середнє значення показника `bill_avg` становить 18,9 — це величина в межах діапазону від 10 до 20, на який припадає 35,58% випадків відтоку.')
+                st.markdown('### Conclusion:')
+                st.write("The higher graph  shows that the highest percentage of customer churn (over 91%) is observed among medium-sized accounts with a balance of 30 or less, with the peak in churn occurring in the medium-sized account range of 10 to 30. Therefore, it is worth noting that the higher the account balance (starting at 30), the less likely a user is to cancel their subscription. In addition, the average value of the `bill_avg` metric is 18.9—a figure within the range of 10 to 20, which accounts for 35.58% of churn cases.")
             case "5. Subscription Duration and Bill Amount":
                 graph = sns.relplot(x='subscription_age',y='bill_avg', hue='churn', col='churn',data=df)
                 
-                st.markdown('### Графік взаємозв’язку між середнью сумою та відтоком клієнтів')
+                st.markdown('##### 1. A graph showing the relationship between subscription duration and average bill amount, broken down by customer churn rate')
                 st.pyplot(graph)
-                st.markdown('### Висновок:')
-                st.write('На даному графіку не спостерігається суттєвих відмінностей (через надмірне накладання графіків) у взаємодії змінних bill_avg та subscription_age: показники відтоку клієнтів майже однакові, за винятком того, що користувачі з найдорожчими рахунками не відмовляються від послуг і продовжують користуватися телекомунікаційними послугами.')
+                st.markdown('### Conclusion:')
+                st.write('This graph does not show any significant differences (due to excessive overlap between the lines) in the interaction between the variables `bill_avg` and `subscription_age`: customer churn rates are nearly identical, except that users with the highest bills do not cancel their services and continue to use telecommunications services.')
     
                 df_filtered = df[df['bill_avg'] <= 150]
     
                 fig1, ax1 = plt.subplots()
                 ax1 = sns.lineplot(x='bill_avg',y='subscription_age',data=df_filtered)
-                ax1.set_xlabel('Середня сума рахунку (bill_avg)')
-                ax1.set_ylabel('Середній термін підписки (subscription_age)')
+                ax1.set_xlabel('Average bill amount (bill_avg)')
+                ax1.set_ylabel('Average Subscription Duration (subscription_age)')
                 plt.tight_layout()
     
-                st.markdown('### Співвідношення між терміном підписки та середньою  сумою рахунку')
+                st.markdown('##### 2. The relationship between the subscription period and the average bill amount')
                 st.pyplot(fig1)
-                st.markdown('### Висновок:')
-                st.write("Графік показує середнє значення subscription_age для кожного значення bill_avg (обмежено діапазоном 0–150). Затінена область навколо лінії — це 95% довірчий інтервал, обчислений методом бутстрепінгу. У діапазоні bill_avg від 0 до ~150, де зосереджена переважна більшість клієнтів, середня тривалість підписки коливається приблизно між 1.5 та 5.5 роками, без чіткого монотонного зв'язку між сумою рахунку та тривалістю підписки — тобто клієнти з різними тарифами затримуються в компанії приблизно однаково довго. Після позначки bill_avg ≈ 150 лінія стає різкою та нестабільною, а довірчий інтервал — значно ширшим. Це не   відображає реальну закономірність, а є артефактом малої вибірки: лише 93 з 72,274 клієнтів (0.13%) мають bill_avg вище 150, тому середнє значення стає надзвичайно чутливим до окремих викидів.")
+                st.markdown('### Conclusion:')
+                st.write("The graph shows the average value of `subscription_age` for each value of `bill_avg` (scaled to the range 0–150). The shaded area around the line represents the 95% confidence interval calculated using the bootstrap method. In the bill_avg range from 0 to ~150, where the vast majority of customers are concentrated, the average subscription duration fluctuates between approximately 1.5 and 5.5 years, with no clear monotonic relationship between the bill amount and subscription duration—that is, customers on different plans stay with the company for roughly the same amount of time. After the bill_avg ≈ 150 mark, the line becomes jagged and unstable, and the confidence interval becomes significantly wider. This does not reflect a real pattern but is an artifact of the small sample size: only 93 out of 72,274 customers (0.13%) have a bill_avg above 150, so the average becomes extremely sensitive to individual outliers.")
     
             case "6. Churn and Service Outages":
                 feature_column_sv = 'service_failure_count'
     
-                feature_presence_labels_sv = ['Мали сервісні збої','Не мали сервісних збоїв']
+                feature_presence_labels_sv = ['Had service failures','Did not have service failures']
     
-                customer_status_labels_sv = ['Пішли','Залишилися активними']
+                customer_status_labels_sv = ['Churned','Remained active']
                 
-                title_all_customers_sv = 'Сервісні збої серед усіх клієнтів'
-                title_churned_customers_sv = 'Сервісні збої серед клієнтів, які пішли'
+                title_all_customers_sv = 'Service failures among all clients'
+                title_churned_customers_sv = 'Service failures among clients that churned'
                 
-                title_churn_rate_with_feature_sv = 'Пішли чи залишилися: клієнти із сервісними збоями'
-                title_churn_rate_without_feature_sv = 'Пішли чи залишилися: клієнти без сервісних збоїв'
+                title_churn_rate_with_feature_sv = 'Churned or Remained active: clients with service failures'
+                title_churn_rate_without_feature_sv = 'Churned or Remained active: clients without service failures'
     
     
-                result_sv = show_all_churn_piecharts(df,feature_column_sv,        feature_presence_labels_sv,customer_status_labels_sv,        title_all_customers_sv,title_churned_customers_sv,        title_churn_rate_with_feature_sv,title_churn_rate_without_feature_sv)
+                result_sv = show_all_churn_piecharts(df,feature_column_sv,      feature_presence_labels_sv,customer_status_labels_sv,        title_all_customers_sv,title_churned_customers_sv,        title_churn_rate_with_feature_sv,title_churn_rate_without_feature_sv)
     
                 st.markdown('### Графіки залежності відтоку клієнтів від кількості збоїв у наданні послуг')
                 st.markdown('##### 1. Графік співвідношення між відтоком клієнтів та кількістю активних користувачів з урахуванням перебоїв у роботі сервісу')
