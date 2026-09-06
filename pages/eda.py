@@ -463,11 +463,11 @@ else:
     
                 result_sv = show_all_churn_piecharts(df,feature_column_sv,      feature_presence_labels_sv,customer_status_labels_sv,        title_all_customers_sv,title_churned_customers_sv,        title_churn_rate_with_feature_sv,title_churn_rate_without_feature_sv)
     
-                st.markdown('### Графіки залежності відтоку клієнтів від кількості збоїв у наданні послуг')
-                st.markdown('##### 1. Графік співвідношення між відтоком клієнтів та кількістю активних користувачів з урахуванням перебоїв у роботі сервісу')
+                st.markdown('### Graphs showing the relationship between customer churn and the number of service failures.')
+                st.markdown('##### 1. Graph showing the relationship between customer churn and the number of active users, accounting for service failures.')
                 st.pyplot(result_sv)
-                st.markdown('### Висновок:')
-                st.write("Перші два графіки показують, що поширеність збоїв у наданні послуг є майже однаковою як серед усіх клієнтів, так і серед тих, хто відмовився від послуг: 16,42 % усіх клієнтів та 16,69 % клієнтів, які відмовилися від послуг, стикалися принаймні з одним збоєм у наданні послуг. Третій і четвертий графіки показують, що показники відтоку клієнтів також дуже схожі між цими двома групами: 56,34% серед клієнтів, які стикалися з перебоями в наданні послуг, проти 55,23% серед клієнтів, які цього не зазнали. Отже, виходячи з цих результатів, істотної різниці в рівні відтоку клієнтів між тими, хто стикався з перебоями в наданні послуг, та тими, хто не стикався, немає. Хоча більше половини клієнтів, які стикалися з перебоями в наданні послуг, зрештою відтоку (56,34 %), дуже схожа частка клієнтів, які не стикалися з такими перебоями, також відтоку (55,23 %). Отже, самі по собі ці результати не дають переконливих доказів того, що перебої в наданні послуг пов’язані з вищим ризиком відтоку клієнтів.")
+                st.markdown('### Conclusion:')
+                st.write("The first two charts show that the prevalence of service disruptions is nearly identical among all customers and among those who canceled their services: 16.42% of all customers and 16.69% of customers who canceled their services experienced at least one service disruption. The third and fourth charts show that customer churn rates are also very similar between these two groups: 56.34% among customers who experienced service disruptions, compared to 55.23% among those who did not. Therefore, based on these results, there is no significant difference in the customer churn rate between those who experienced service disruptions and those who did not. Although more than half of the customers who experienced service disruptions eventually churned (56.34%), a very similar proportion of customers who did not experience such disruptions also churned (55.23%). Therefore, these results alone do not provide conclusive evidence that service disruptions are associated with a higher risk of customer churn.")
     
                 min_service_failure = float(df['service_failure_count'].min())
                 max_service_failure = float(df['service_failure_count'].max())
@@ -475,54 +475,54 @@ else:
                 service_failure_interval = 1
                 service_failure_procedural_slip = 1
     
-                necessary_service_dict = get_churn_distribution(df,         min_service_failure, max_service_failure,column_service_failure,   service_failure_interval,service_failure_procedural_slip)
+                necessary_service_dict = get_churn_distribution(df,         min_service_failure,max_service_failure,column_service_failure, service_failure_interval,service_failure_procedural_slip)
                 service_failure_list,churn_quantity_list_f = return_results_as_lists(min_service_failure, max_service_failure,column_service_failure,  necessary_service_dict,service_failure_interval,        service_failure_procedural_slip)
     
-                service_failure_title = 'Кількість відтоку від кількості збоїв'
-                x_service_failure = 'Кількість збоїв'
+                service_failure_title = 'Churn quantity relative to the number of failures'
+                x_service_failure = 'Number of failures'
                 
                 table_height_service_failure = 1
-                final_service_failure_graph = show_graph_and_table_churns        (churn_quantity_list_f, service_failure_list,service_failure_title, x_service_failure, table_height_service_failure) 
+                final_service_failure_graph = show_graph_and_table_churns       (churn_quantity_list_f, service_failure_list,service_failure_title, x_service_failure, table_height_service_failure) 
                 final_service_failure_graph
     
-                st.markdown('##### 2. Графік взаємозв’язку між відтоком клієнтів та кількістю перебоїв у роботі')
+                st.markdown('##### 2. Graph showing the relationship between customer churn and the number of service failures.')
                 st.pyplot(final_service_failure_graph)
-                st.markdown('### Висновок:')
-                st.write("Графік демонструє, що, хоча 83,31% користувачів, які відмовилися від послуг, не стикалися з жодними збоями в їх наданні, 10,39% випадків відтоку клієнтів могли бути спричинені першим збоєм, а другий збій міг призвести до втрати 3,63% клієнтів; водночас подальші збої не мають суттєвого впливу на цей показник. Отже, це свідчить про те, що кількість збоїв у наданні послуг не є вагомою причиною для припинення користування телекомунікаційними послугами.")
+                st.markdown('### Conclusion:')
+                st.write("The graph shows that, although 83.31% of users who canceled their services did not experience any service disruptions, 10.39% of customer churn cases may have been caused by the first disruption, and a second disruption could have led to the loss of 3.63% of customers; at the same time, subsequent disruptions do not have a significant impact on this indicator. Thus, this indicates that the number of disruptions in service delivery is not a significant reason for discontinuing the use of telecommunications services.")
     
             case "7. Churn by Active Contract":
                 feature_column_ac = 'has_active_contract'
-                feature_presence_labels_ac = ['Мають чинний контракт','Не мають чинний контракт']
-                customer_status_ac = ['Пішли','Залишилися активними']
-                title_all_customers_ac = 'Чинні контракти серед усіх клієнтів'
-                title_churned_customers_ac = 'Чинні контракти серед клієнтів, які пішли'
-                title_churn_rate_with_feature_ac = 'Пішли чи залишилися: клієнти із чинними контрактами'
-                title_churn_rate_without_feature_ac = 'Пішли чи залишилися: клієнти без чинних контрактів'
+                feature_presence_labels_ac = ['Have an active contract','Do not have an active contract']
+                customer_status_ac = ['Churned','Remained active']
+                title_all_customers_ac = 'Active contracts among all clients'
+                title_churned_customers_ac = 'Active contracts among clients that churned'
+                title_churn_rate_with_feature_ac = 'Churned or remained: clients with active contracts'
+                title_churn_rate_without_feature_ac = 'Churned or remained: clients without active contracts'
                 result_ac = show_all_churn_piecharts(df, feature_column_ac,feature_presence_labels_ac,customer_status_ac,title_all_customers_ac,title_churned_customers_ac,title_churn_rate_with_feature_ac,title_churn_rate_without_feature_ac)
-                st.markdown('#### Графік відтоку клієнтів, які мають чинні контракти')
+                st.markdown('#### Chart of customer churn for active contracts')
                 st.pyplot(result_ac)
-                st.markdown('### Висновок:')
-                st.write("Перша кругова діаграма показує, що 52,49 % усіх клієнтів не мають чинного договору. Друга діаграма показує, що лише 10,09 % клієнтів, які відмовилися від послуг, мали чинний договір на момент відходу, що означає: 89,91 % усіх випадків відмови припадає на клієнтів без чинних договірних зобов’язань. Крім того, третій графік ілюструє, що понад 88 % (88,23 %) клієнтів з діючими договорами не відмовилися від телекомунікаційних послуг, тоді як, навпаки, четвертий графік демонструє, що 94,93 % тих, хто не мав діючого договору, відмовилися від послуг. Це вказує на те, що відсутність діючого договору тісно пов’язана з вищою ймовірністю відтоку клієнтів. Практичний висновок полягає в тому, що найвищий ризик відтоку клієнтів у компанії зосереджений у її клієнтській базі без контрактів, і заходи з утримання клієнтів — такі як стимулювання поновлення контрактів або пропозиція строкових акцій — повинні бути спрямовані насамперед на цей сегмент.")
+                st.markdown('### Conclusion:')
+                st.write("The first pie chart shows that 52.49% of all customers do not have a valid contract. The second chart shows that only 10.09% of customers who canceled their services had a valid contract at the time of cancellation, which means that 89.91% of all cancellations were by customers without valid contractual obligations. Furthermore, the third graph illustrates that more than 88% (88.23%) of customers with active contracts did not cancel their telecommunications services, whereas, conversely, the fourth graph shows that 94.93% of those without an active contract canceled their services. This indicates that the absence of a current contract is closely linked to a higher probability of customer churn. The practical conclusion is that the company’s highest risk of customer churn is concentrated in its non-contract customer base, and customer retention efforts—such as encouraging contract renewals or offering limited-time promotions—should be directed primarily at this segment.")
             case "8. Download/Upload and Churn":
-                st.markdown('### Графіки порівняння та впливу середніх показників швидкості завантаження (download) і вивантаження (upload) на кількість відтоку клієнтів.')
+                st.markdown('### The comparing graphs that illustrate the impact of download and upload averages metrics on customer churn')
     
                 ### 1. Графік співвідношення між відтоком клієнтів та впливом середніх показників швидкості завантаження (download)
                 feature_column_da = 'download_avg'
     
-                feature_presence_labels_da = ['Скористалися опцією завантаження', 'Не скористалися опцією завантаження']
-                customer_status_da = ['Пішли','Залишилися активними']
+                feature_presence_labels_da = ['Used the download option', 'Did not use the download option']
+                customer_status_da = ['Churned','Remained active']
                 
-                title_all_customers_da = 'Усі клієнти: використання опції завантажень'
-                title_churned_customers_da = 'Клієнти, що пішли: використання опції завантажень'
-                title_churn_rate_with_feature_da = 'Пішли чи залишилися: використали опцію завантаження'
-                title_churn_rate_without_feature_da = 'Пішли чи залишилися: НЕ використали опцію завантаження'
+                title_all_customers_da = 'All clients: using the downloads option'
+                title_churned_customers_da = 'Churned clients: using the downloads option'
+                title_churn_rate_with_feature_da = 'Churned or remained: used the download option'
+                title_churn_rate_without_feature_da = 'Churned or remained: Did not use the download option'
                 
-                result_da = show_all_churn_piecharts(df, feature_column_da,        feature_presence_labels_da,customer_status_da,title_all_customers_da, title_churned_customers_da,            title_churn_rate_with_feature_da,            title_churn_rate_without_feature_da)
+                result_da = show_all_churn_piecharts(df, feature_column_da,   feature_presence_labels_da,customer_status_da,title_all_customers_da, title_churned_customers_da,            title_churn_rate_with_feature_da,            title_churn_rate_without_feature_da)
                 
-                st.markdown('##### 1. Графік співвідношення між відтоком клієнтів та впливом середніх показників швидкості завантаження (download)')
+                st.markdown('##### 1. Graph showing the relationship between customer churn and the impact of download feature (download)')
                 st.pyplot(result_da)
-                st.markdown('### Висновок:')
-                st.write("Як видно з чотирипанельної інформаційної панелі, перший графік показує, що понад 84% (84,33%) усіх користувачів скористалися опцією завантаження (`download_avg`), тоді як цей показник для клієнтів, які відмовилися від послуги, становить 72,74% — приблизно на 11,6% менше. Крім того, третій графік ілюструє, що серед користувачів, які скористалися опцією завантаження, розподіл є майже рівним: 47,79% відписалися, а 52,21% залишаються активними. З іншого боку, четвертий графік демонструє, що переважна більшість (96,43%) клієнтів, які не скористалися опцією завантаження, зрештою відписалися. Це вказує на те, що відсутність активності щодо завантажень тісно пов’язана з відмовою від послуги.")
+                st.markdown('### Conclusion:')
+                st.write("As shown in the four-panel dashboard, the first chart indicates that over 84% (84.33%) of all users took advantage of the download option (`download_avg`), while this figure for customers who opted out of the service is 72.74%—approximately 11.6% lower. In addition, the third graph illustrates that among users who used the download option, the distribution is nearly equal: 47.79% unsubscribed, while 52.21% remain active. On the other hand, the fourth graph shows that the vast majority (96.43%) of customers who did not use the download option eventually unsubscribed. This indicates that a lack of download activity is closely linked to service cancellation.")
     
                 ### 2. Графік кількості відтоку у порівнянні із середнім показником завантажень
     
@@ -537,37 +537,37 @@ else:
                 necessary_download_avg_dict = get_churn_distribution(df, min_download_avg, max_download_avg,column_download_avg,download_avg_interval,download_avg_procedural_slip)
                 download_avg_list,churn_quantity_list_avg = return_results_as_lists(min_download_avg, max_download_avg,column_download_avg, necessary_download_avg_dict,download_avg_interval,download_avg_procedural_slip)
     
-                download_avg_title = 'Кількість відтоку у порівнянні із середнім показником завантажень'
-                x_download_avg = 'Кількість завантажень'
+                download_avg_title = 'Number of churns in comparison to the average rate of downloads.'
+                x_download_avg = 'Numbers of downloads'
                 table_height_download_avg = 1.5
                 
                 final_download_avg_graph = show_graph_and_table_churns(churn_quantity_list_avg,download_avg_list,download_avg_title,x_download_avg,table_height_download_avg) 
     
-                st.markdown('##### 2. Графік кількості відтоку у порівнянні із середнім показником завантажень')
+                st.markdown('##### 2. Churn graph vs. average downloads rate')
                 st.pyplot(final_download_avg_graph)
-                st.markdown('### Висновок:')
-                st.write("Як таблиця, так і графік демонструють, що зі збільшенням кількості завантажень частка відтоку стабільно знижується")
+                st.markdown('### Conclusion:')
+                st.write("Both the table and the graph demonstrate that the churn rate consistently decreases as the number of downloads increases.")
     
                 ### 3. Графік співвідношення між відтоком клієнтів та впливом середніх показників швидкості вивантаження (upload)
                 ## upload_avg = ua
     
                 feature_column_ua = 'upload_avg'
     
-                feature_presence_labels_ua = ['Скористалися опцією вивантаженя', 'Не скористалися опцією вивантаженя']
-                customer_status_ua = ['Пішли','Залишилися активними']
-                title_all_customers_ua = 'Усі клієнти: використання опції вивантажень'
-                title_churned_customers_ua = 'Клієнти, що пішли: використання опції вивантажень'
+                feature_presence_labels_ua = ['Used the upload option', 'Did not use the upload option']
+                customer_status_ua = ['Churned','Remained active']
+                title_all_customers_ua = 'All clients: usage of the upload option'
+                title_churned_customers_ua = 'Churned clients: usage of the upload option'
     
-                title_churn_rate_with_feature_ua = 'Пішли чи залишилися: використали опцію вивантаженя'
-                title_churn_rate_with_feature_ua = 'Пішли чи залишилися: НЕ використали опцію вивантаженя'
+                title_churn_rate_with_feature_ua = 'Churned or remained: used the upload option'
+                title_churn_rate_with_feature_ua = 'Churned or remained: did not use the upload option'
     
                 result_ua = show_all_churn_piecharts(df,feature_column_ua,feature_presence_labels_da,customer_status_ua,title_all_customers_ua,title_churned_customers_ua,title_churn_rate_with_feature_ua,title_churn_rate_with_feature_ua)
     
-                st.markdown('##### 3. Графік співвідношення між відтоком клієнтів та впливом середніх показників швидкості вивантаження (upload)')
+                st.markdown('##### 3. Graph showing the relationship between customer churn and the impact of upload metrics. (upload)')
                 st.pyplot(result_ua)
     
-                st.markdown('### Висновок:')
-                st.write("Оскільки показник upload_avg демонструє майже ідентичні характеристики розподілу та тенденції відтоку порівняно з download_avg (із відхиленнями менш ніж 1,6%), отримані результати збігаються з даними щодо завантаження: низький рівень використання функцій передачі даних (upload) так само пов’язаний із вищою ймовірністю відмови від послуги, що підтверджує статус загального низького обсягу передачі даних як ключового індикатора відтоку.")
+                st.markdown('### Conclusion:')
+                st.write("Since the `upload_avg` metric exhibits nearly identical distribution characteristics and outflow trends compared to `download_avg` (with deviations of less than 1.6%), the results obtained are consistent with the download data: low usage of upload functions is also associated with a higher probability of service churn, confirming that a generally low data transfer volume is a key indicator of churn.")
     
                 ### 4. Графік кількості відтоку у порівнянні із середнім показником вивантаженнь
                 min_upload_avg = df['upload_avg'].min()
@@ -580,55 +580,55 @@ else:
                 necessary_upload_avg_dict = get_churn_distribution(df, min_upload_avg, max_upload_avg,column_upload_avg,upload_avg_interval,upload_avg_procedural_slip)
                 upload_avg_list,churn_quantity_list_upload = return_results_as_lists(min_upload_avg, max_upload_avg,column_upload_avg, necessary_upload_avg_dict,upload_avg_interval,upload_avg_procedural_slip)
     
-                upload_avg_title = 'Кількість відтоку у порівнянні із середнім показником вивантажень'
-                x_upload_avg = 'Кількість вивантажень'
+                upload_avg_title = 'Number of churns in comparison with average upload metric'
+                x_upload_avg = 'Number of uploads'
     
                 final_upload_avg_graph = show_graph_and_table_churns(churn_quantity_list_upload,upload_avg_list,upload_avg_title,x_upload_avg) 
-                st.markdown('##### 4. Графік кількості відтоку у порівнянні із середнім показником вивантаженнь')
+                st.markdown('##### 4. Chart showing the number of churns compared to the average number of uploads')
                 st.pyplot(final_upload_avg_graph)
-                st.markdown('### Висновок:')
-                st.write("Як таблиця, так і графік демонструють схожу загальну тенденцію до зниження показника download_avg, але з однією ключовою відмінністю: пік відтоку користувачів припадає на момент, коли середня кількість завантажень становить 5,0 (досягаючи 57,34 %), а не на нульовому рівні. Крім того, на графіку спостерігається набагато більш різке падіння: щойно показник активності завантаження досягає 20,0, рівень відтоку користувачів опускається нижче 1% (0,96%) і продовжує стабільно та поступово знижуватися.")
+                st.markdown('### Conclusion:')
+                st.write("Both the table and the graph show a similar overall downward trend in the `download_avg` metric, but with one key difference: the peak in user churn occurs when the average number of downloads is 5.0 (reaching 57.34%), rather than at zero. In addition, the graph shows a much sharper drop: as soon as the download activity metric reaches 20.0, the user churn rate drops below 1% (0.96%) and continues to decline steadily and gradually.")
     
             case "9. Download Over-Limit and Churn":
-                st.markdown('### 9. Графіки відтоку клієнтів на основі перевищення ліміту завантажень')
+                st.markdown('### 9. Client churn graphs based on exceeding download limits')
                 #### 1. Графік співвідношення між характеристикою download_over_limit та між потенційним середнім показником відтоку
                 fig_ol,axs_ol = plt.subplots()
     
                 axs_ol = sns.lineplot(x='download_over_limit',y='churn',data=df)
-                axs_ol.set_title('Співвідношення між характеристикою download_over_limit та між потенційним середнім показником відтоку')
+                axs_ol.set_title('The relationship between the `download_over_limit` metric and the potential average churn rate')
                 plt.tight_layout()
                 plt.show()
     
-                st.markdown('##### 1. Графік співвідношення між характеристикою download_over_limit та між потенційним середнім показником відтоку')
+                st.markdown('##### 1. The relationship graph between the `download_over_limit` metric and the potential average churn rate')
                 st.pyplot(fig_ol)
-                st.markdown('### Висновок:')
-                st.write("Лінійний графік демонструє сильний позитивний кореляційний зв’язок: зі збільшенням показника `download_over_limit` середній рівень відтоку клієнтів різко зростає — приблизно з 0,53 (при значенні 0) — і стабільно підвищується на проміжних етапах, сягаючи 1.0, коли значення показника досягає 7.")
+                st.markdown('### Conclusion:')
+                st.write("The line graph shows a strong positive correlation: as the `download_over_limit` metric increases, the average customer churn rate rises sharply—from approximately 0.53 (when the metric is 0)—and continues to rise steadily at intermediate stages, reaching 1.0 when the metric reaches 7.")
     
                 #### 2. Графік співвідношення між відтоком клієнтів та впливом  опції перевищення ліміту завантаження (download_over_limit)
                 feature_column_dol = 'download_over_limit'
     
-                feature_presence_labels_dol = ['Перевищели ліміт завантаження', 'Не перевищели ліміт завантаження']
+                feature_presence_labels_dol = ['Exceeded the limit of dowloads', 'Did not exceed the limit of downloads']
                 customer_status_dol = ['Пішли','Залишилися активними']
     
-                title_dol = 'Усі клієнти: перевищили ліміт завантаження'
-                title_dol_churns = 'Клієнти, що пішли: перевищили ліміт завантаження'
+                title_dol = 'All clients: exceeded the limit of downloads'
+                title_dol_churns = 'Churned clients: exceeded the limit of downloads'
     
-                title_churn_rate_with_feature_dol = 'Пішли чи залишилися: перевищели ліміт завантаження'
-                title_churn_rate_without_feature_dol = 'Пішли чи залишилися: НЕ перевищели ліміт завантаження'
+                title_churn_rate_with_feature_dol = 'Churned or remained: exceeded the limit of downloads'
+                title_churn_rate_without_feature_dol = 'Churned or remained: did not exceed the limit of downloads'
     
                 result_dol = show_all_churn_piecharts(df,feature_column_dol,feature_presence_labels_dol,customer_status_dol,title_dol,title_dol_churns,title_churn_rate_with_feature_dol,title_churn_rate_without_feature_dol)
-                st.markdown('##### 2. Графік співвідношення між відтоком клієнтів та впливом  опції перевищення ліміту завантаження (download_over_limit)')
+                st.markdown('##### 2. Chart showing the relationship between customer churn and the impact of the “exceed download limit” option (download_over_limit)')
                 st.pyplot(result_dol)
-                st.markdown('### Висновок:')
-                st.write("Чотирипанельний датшборд показує, що лише 5.40% усіх клієнтів перевищили ліміт завантажень, і вони становлять таку ж малу частку (8.62%) серед загальної кількості клієнтів, що пішли. Проте аналіз рівня відтоку всередині кожного сегмента розкриває важливу інсайдерську інформацію: серед клієнтів, які перевищили ліміт, аж 88.46% пішли (третій графік). Натомість серед тих, хто не перевищував ліміти, 53.53% також залишили сервіс (четвертий графік). Крім того, лінійний графік демонструє сильну позитивну кореляцію: зі збільшенням показника download_over_limit від 0 до 7 середній рівень відтоку стрімко зростає приблизно з 0.53 до 1.0. Це вказує на те, що досягнення або перевищення лімітів завантаження є серйозним джерелом невдоволення та потужним прямим індикатором відтоку клієнтів.")
+                st.markdown('### Conclusion:')
+                st.write("The four-panel dashboard shows that only 5.40% of all customers exceeded the download limit, and they account for an equally small share (8.62%) of the total number of customers who left. However, an analysis of the churn rate within each segment reveals important insights: among customers who exceeded the limit, as many as 88.46% churned (third chart). In contrast, among those who did not exceed the limits, 53.53% also left the service (fourth chart). Furthermore, the line graph shows a strong positive correlation: as the `download_over_limit` metric increases from 0 to 7, the average churn rate rises sharply from approximately 0.53 to 1.0. This indicates that reaching or exceeding download limits is a significant source of dissatisfaction and a strong direct indicator of customer churn.")
     
     
             case "10. Feature Correlation":
-                st.markdown('### 10. Графік кореляції між ознаками')
+                st.markdown('### 10. Correlation graph between features')
                 corr_matrix = df.corr()
     
                 fig_cr, axs_cr = plt.subplots()
                 axs_cr = sns.heatmap(corr_matrix, cmap='coolwarm', annot=False, fmt=".2f")
-                axs_cr.set_title('Кореляція між ознаками')
+                axs_cr.set_title('Correlation between features')
                 st.pyplot(fig_cr)
 
