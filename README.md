@@ -13,7 +13,7 @@ An end-to-end machine learning project for predicting the likelihood that a tele
 
 **EN:** The project covers the full machine learning lifecycle: exploratory data analysis, data preprocessing, training and comparison of five classification algorithms, and a Streamlit web application for real-time churn prediction, containerized with Docker.
 
-**Датасет / Dataset:** `internet_service_churn.csv` — 72,274 customer records with demographic, subscription, contract, and usage-based features, and a binary `churn` target.
+**Датасет / Dataset:** `internet_service_churn.csv` — 72,274 customer records with  subscription, contract, and usage-based features, and a binary `churn` target.
 
 ---
 
@@ -25,8 +25,8 @@ telecom-churn-prediction/
 ├── notebooks/
 │   └── 01_eda.ipynb          # EDA + preprocessing (interleaved by design — see notes below)
 │   └── 02_model_training.ipynb  # Model training, tuning, evaluation, comparison
-├── functions/                # Reusable preprocessing & prediction helper functions
-├── models/                   # Saved model artifacts (.pkl) and fitted scaler
+├── functions/                # Reusable  functions
+├── models/                   # Saved model artifacts (.pkl, .keras) and fitted scaler
 ├── history_nn/               # Training history (loss/accuracy curves) for the Neural Network
 ├── pages/                    # Streamlit multipage app screens
 ├── streamlit_app.py          # Streamlit application entry point
@@ -36,7 +36,8 @@ telecom-churn-prediction/
 └── LICENSE
 ```
 
-**Примітка / Note:** дослідницький аналіз та попередня обробка даних свідомо об'єднані в одному ноутбуці (`01_eda.ipynb`), оскільки рішення щодо обробки пропущених значень і створення нових ознак приймались безпосередньо в процесі аналізу — кожен крок обробки супроводжується обґрунтуванням на основі виявлених закономірностей, а не виконується окремо від дослідження. / Exploratory analysis and preprocessing are intentionally combined in a single notebook, since each preprocessing decision (missing-value handling, feature engineering) was made as a direct result of the investigation that preceded it, with its reasoning documented alongside the analysis itself.
+**Примітка:** дослідницький аналіз та попередня обробка даних свідомо об'єднані в одному ноутбуці (`01_eda.ipynb`), оскільки рішення щодо обробки пропущених значень і створення нових ознак приймались безпосередньо в процесі аналізу — кожен крок обробки супроводжується обґрунтуванням на основі виявлених закономірностей, а не виконується окремо від дослідження. 
+**Note:** Exploratory analysis and preprocessing are intentionally combined in a single notebook, since each preprocessing decision (missing-value handling, feature engineering) was made as a direct result of the investigation that preceded it, with its reasoning documented alongside the analysis itself.
 
 ---
 
@@ -66,10 +67,10 @@ telecom-churn-prediction/
 
 | Model | Key parameters |
 |---|---|
-| Logistic Regression | `C`, `penalty='l2'` |
-| Decision Tree | `criterion='entropy'`, `max_depth`, `min_samples_leaf` |
-| Random Forest | `criterion='entropy'`, `min_samples_leaf` |
-| SVM | `kernel='rbf'`, `C`, `gamma='scale'` |
+| Logistic Regression | `C=7.5`, `penalty='l2'` |
+| Decision Tree | `criterion='entropy'`, `max_depth=9`, `min_samples_leaf=3` |
+| Random Forest | `criterion='entropy'`, `max_features=None`, `min_samples_leaf=4` |
+| SVM | `kernel='rbf'`, `C=90`, `gamma='scale'`,`probability=True` |
 | Neural Network (Keras) | Dense layers with ReLU activation, sigmoid output, Dropout regularization, Adam optimizer, `binary_crossentropy` loss |
 
 ---
@@ -87,9 +88,9 @@ telecom-churn-prediction/
 | Recall | 0.9256 | 0.9401 | **0.9437** | 0.9331 | 0.9362 |
 | F1-score | 0.9231 | 0.9387 | **0.9430** | 0.9316 | 0.9354 |
 
-**UA — Висновок:** Модель **Random Forest** обрана як фінальна — вона стабільно посідає перше або близьке до нього місце практично за кожною метрикою для обох класів, залишаючись швидкою у навчанні та простою для розгортання. Логістична регресія залишається сильною альтернативою там, де важлива інтерпретованість. Різниця в точності між усіма моделями не перевищує 2%, що свідчить про сильний та відносно лінійно розділимий сигнал у ознаках — зокрема, `has_active_contract` показала кореляцію -0.84 з відтоком, що і пояснює високу узгодженість результатів між принципово різними алгоритмами.
+**UA — Висновок:** Модель **Random Forest** обрана як фінальна — вона стабільно посідає перше або близьке до нього місце практично за кожною метрикою для обох класів, залишаючись швидкою у навчанні та простою для розгортання. Логістична регресія залишається сильною альтернативою там, де важлива інтерпретованість. Різниця в точності між усіма моделями не перевищує 2%, що свідчить про сильний та відносно лінійно розділимий сигнал у ознаках.
 
-**EN — Conclusion:** **Random Forest** was selected as the final model — it consistently ranks first or a close second across nearly every metric for both classes, while remaining fast to train and straightforward to deploy. Logistic Regression remains a strong alternative where interpretability is prioritized. The accuracy spread across all models does not exceed 2%, indicating a strong, largely linearly separable signal in the engineered features — notably, `has_active_contract` alone showed a -0.84 correlation with churn, which explains the high consistency of results across fundamentally different algorithm types.
+**EN — Conclusion:** **Random Forest** was selected as the final model — it consistently ranks first or a close second across nearly every metric for both classes, while remaining fast to train and straightforward to deploy. Logistic Regression remains a strong alternative where interpretability is prioritized. The accuracy spread across all models does not exceed 2%, indicating a strong, largely linearly separable signal in the engineered features.
 
 ---
 
@@ -141,7 +142,6 @@ docker run --name telecom-churn-app -p 80:8501 -d telecom-churn-app
 http://localhost
 ```
 
-(Порт 80 — стандартний порт HTTP, тому вказувати його в адресі не обов'язково. / Port 80 is the standard HTTP port, so it does not need to be specified explicitly in the URL.)
 
 Щоб зупинити контейнер / To stop the container:
 ```bash
