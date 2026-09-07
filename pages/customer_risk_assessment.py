@@ -16,11 +16,11 @@ model_svm = joblib.load('models/svm/best_svm_model.pkl')
 model_nn = models.load_model("models/neural_network/neural_network.keras")
 
 
-language = st.sidebar.selectbox(
-    "Мова / Language",
-    ["Українська", "English"]
-)
-
+# language = st.sidebar.selectbox(
+#     "Мова / Language",
+#     ["Українська", "English"]
+# )
+language = st.session_state.language
 if language == 'Українська':
     st.title('Оцінка ризику відтоку клієнтів')
 
@@ -47,7 +47,7 @@ if language == 'Українська':
                 predict_show_model_results(model_svm,df,input_scaled,language)
             case "5. Нейронна мережа":
                 predict_show_model_results(model_nn,df,input_scaled,language)
-
+    
 else:
     st.title('Customer Churn Risk Assessment')
 

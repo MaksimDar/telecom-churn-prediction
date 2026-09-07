@@ -9,12 +9,13 @@ final_comparison_no_churn_df = pd.read_csv(f'{metrics_location}/no_churn_df.csv'
 final_comparison_macro_df = pd.read_csv(f'{metrics_location}/macro_df.csv')
 
 
-language = st.sidebar.selectbox(
-    "Мова / Language",
-    ["Українська", "English"]
-)
+# language = st.sidebar.selectbox(
+#     "Мова / Language",
+#     ["Українська", "English"],
+#     key="language"
+# )
 
-if language == "Українська":
+if st.session_state.language == "Українська":
     st.title('Розроблені моделі')
     st.markdown('### Порівняння моделей')
 

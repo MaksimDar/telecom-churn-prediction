@@ -10,13 +10,13 @@ df = pd.read_csv('data/eda_data/df_eda.csv')
 churned_users = df['churn'].sum()
 active_users = df.shape[0] - churned_users
 
-language = st.sidebar.selectbox(
-    "Мова / Language",
-    ["Українська", "English"]
-)
+# language = st.sidebar.selectbox(
+#     "Мова / Language",
+#     ["Українська", "English"],key="language"
+# )
 
 
-if language == 'Українська':
+if st.session_state.language == 'Українська':
     st.title('Дослідницький Аналіз Даних (EDA)')
     graph_uk = st.selectbox('Оберіть розділ:', [ "1. Активні та відтокові клієнти",
         "2. Відтік за типом підписки",

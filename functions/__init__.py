@@ -5,3 +5,4 @@ from .show_graph_and_table_churns import show_graph_and_table_churns
 from .download_model import download_model
 from .prepare_data import prepare_data
 from .predict_show_model_results import predict_show_model_results
+from .return_language_type import return_language_type

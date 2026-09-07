@@ -17,7 +17,7 @@ def prepare_data(uploaded_file):
     
     if 'id' in df.columns:
         df = df.drop(columns=['id'])
-    st.write(df)
+    st.write(df.head(10))
     df_clean = df.fillna(df.median())
     expected_columns = ['is_tv_subscriber', 'is_movie_package_subscriber', 'subscription_age','bill_avg', 'remaining_contract', 'service_failure_count','download_avg', 'upload_avg', 'download_over_limit','has_contract_info', 'has_active_contract']
     df_clean = df_clean[expected_columns] 
