@@ -163,4 +163,5 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 ## 11. Автор / Author
 
 **Maksym Dovhusha**
+
 Developed as part of a Data Science & Machine Learning course project.
